@@ -13,6 +13,9 @@ const config = {
 
 class Firebase {
   constructor() {
+
+    console.log("init Firebase with", config);
+
     app.initializeApp(config);
 
     /* Helper */
@@ -72,7 +75,7 @@ class Firebase {
             const dbUser = snapshot.val();
 
             // default empty roles
-            if (!dbUser.roles) {
+            if (dbUser && !dbUser.roles) {
               dbUser.roles = {};
             }
 

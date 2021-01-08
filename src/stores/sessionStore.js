@@ -1,15 +1,22 @@
-import { observable, action } from 'mobx';
+import {action, makeAutoObservable} from 'mobx';
 
 class SessionStore {
-  @observable authUser = null;
 
-  constructor(rootStore) {
-    this.rootStore = rootStore;
-  }
+    rootStore = null;
+    authUser = null;
 
-  @action setAuthUser = authUser => {
-    this.authUser = authUser;
-  };
+    constructor(rootStore) {
+        makeAutoObservable(this, {
+            rootStore: false,
+            setAuthUser: action
+        });
+        this.rootStore = rootStore;
+    }
+
+    setAuthUser = authUser => {
+        this.authUser = authUser;
+    };
+
 }
 
 export default SessionStore;

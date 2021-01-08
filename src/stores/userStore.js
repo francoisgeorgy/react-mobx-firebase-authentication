@@ -1,30 +1,38 @@
-import { observable, action, computed } from 'mobx';
+import {observable, action, computed, makeAutoObservable} from 'mobx';
 
 class UserStore {
-  @observable users = null;
 
-  constructor(rootStore) {
-    this.rootStore = rootStore;
-  }
+    rootStore = null;
+    users = null;
 
-  @action setUsers = users => {
-    this.users = users;
-  };
-
-  @action setUser = (user, uid) => {
-    if (!this.users) {
-      this.users = {};
+    constructor(rootStore) {
+        makeAutoObservable(this, {
+            rootStore: false,
+            setUsers: action,
+            setUser: action,
+            userList: computed
+        });
+        this.rootStore = rootStore;
     }
 
-    this.users[uid] = user;
-  };
+    setUsers = users => {
+        this.users = users;
+    };
 
-  @computed get userList() {
-    return Object.keys(this.users || {}).map(key => ({
-      ...this.users[key],
-      uid: key,
-    }));
-  }
+    setUser = (user, uid) => {
+        if (!this.users) {
+            this.users = {};
+        }
+        this.users[uid] = user;
+    };
+
+    get userList() {
+        return Object.keys(this.users || {}).map(key => ({
+            ...this.users[key],
+            uid: key,
+        }));
+    }
+
 }
 
 export default UserStore;

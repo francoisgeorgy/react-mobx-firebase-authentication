@@ -1,27 +1,35 @@
-import { observable, action, computed } from 'mobx';
+import {observable, action, computed, makeAutoObservable} from 'mobx';
 
 class MessageStore {
-  @observable messages = null;
-  @observable limit = 5;
 
-  constructor(rootStore) {
-    this.rootStore = rootStore;
-  }
+    rootStore = null;
+    messages = null;
+    limit = 5;
 
-  @action setMessages = messages => {
-    this.messages = messages;
-  };
+    constructor(rootStore) {
+        makeAutoObservable(this, {
+            rootStore: false,
+            setMessages: action,
+            setLimit: action,
+            messageList: computed
+        });
+        this.rootStore = rootStore;
+    }
 
-  @action setLimit = limit => {
-    this.limit = limit;
-  };
+    setMessages = messages => {
+        this.messages = messages;
+    };
 
-  @computed get messageList() {
-    return Object.keys(this.messages || {}).map(key => ({
-      ...this.messages[key],
-      uid: key,
-    }));
-  }
+    setLimit = limit => {
+        this.limit = limit;
+    };
+
+    get messageList() {
+        return Object.keys(this.messages || {}).map(key => ({
+            ...this.messages[key],
+            uid: key,
+        }));
+    }
 }
 
 export default MessageStore;
